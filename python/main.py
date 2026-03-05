@@ -10,7 +10,7 @@ from pydantic import Field
 
 load_dotenv()
 
-class StepOne():
+class StepOne:
     def __init__(self):
         pass
     async def main(self) -> None:
@@ -26,16 +26,18 @@ class StepOne():
             instructions="You are a friendly assistant. Keep your answers brief.",
         )
 
+        # Non-streaming: get the complete response at once
         result = await agent.run("What is the capital of France?")
         print(f"Agent: {result}")
 
+        # Streaming: receive tokens as they are generated
         print("Agent (streaming): ", end="", flush=True)
         async for chunk in agent.run("Tell me a one-sentence fun fact.", stream=True):
             if chunk.text:
                 print(chunk.text, end="", flush=True)
         print()
     
-class StepTwo():
+class StepTwo:
     def __init__(self):
         pass
 
@@ -56,7 +58,7 @@ class StepTwo():
         )
 
         agent = client.as_agent(
-            name="HelloAgent",
+            name="WeatherAgent",
             instructions="You are a friendly assistant and you help with weather. Use the get_weather tool if you have to",
             tools=self.get_weather
         )
@@ -68,6 +70,33 @@ class StepTwo():
         print(f"Agent: {result}")
 
 
+class StepThree:
+    def __init__(self):
+        pass
+    async def main(self) -> None:
+        client = AzureOpenAIChatClient(
+            endpoint=os.environ["AZURE_OPENAI_ENDPOINT"],
+            deployment_name=os.environ["AZURE_OPENAI_CHAT_DEPLOYMENT_NAME"],
+            api_key=os.environ["AZURE_OPENAI_API_KEY"],
+            api_version=os.environ["AZURE_OPENAI_API_VERSION"],
+        )
+
+        agent = client.as_agent(
+            name="ConversationAgent",
+            instructions="You are a friendly assistant. Keep your anwsers brief.",
+        )
+
+        # Create a session to maintain conversation history
+        session = agent.create_session()
+
+        # First turn
+        result = await agent.run("My name is Maxime and I love to chat with my friends.", session=session)
+        print(f"Agent: {result}\n")
+
+        # Second turn — the agent should remember the user's name and hobby
+        result = await agent.run("What do you remember about me?", session=session)
+        print(f"Agent: {result}")
+
 if __name__ == "__main__":
-    app = StepTwo()
+    app = StepThree()
     asyncio.run(app.main())
