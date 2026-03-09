@@ -5,4 +5,5 @@
 // await StructuredOutput.Run();
 // await Sequential.Run();
 // await Concurrent.Run();
-await Handoff.Run();
+// await Handoff.Run();
+await GroupChat.Run();
