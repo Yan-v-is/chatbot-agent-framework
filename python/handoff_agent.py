@@ -1,14 +1,11 @@
 # Copyright (c) Microsoft. All rights reserved.
 
 import asyncio
-import logging
 import os
-from typing import Annotated, cast
+from typing import Annotated
 
 from agent_framework import (
-    Agent,
     AgentResponseUpdate,
-    Message,
     resolve_agent_id,
     tool,
 )

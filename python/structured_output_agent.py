@@ -1,7 +1,6 @@
 import asyncio
 import os
 
-from agent_framework import Message, Content
 from agent_framework.azure import AzureOpenAIChatClient
 from dotenv import load_dotenv
 from pydantic import BaseModel
